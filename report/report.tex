@@ -1,0 +1,394 @@
+\documentclass[12pt,fleqn]{article}
+
+\usepackage{graphicx}
+\usepackage{paralist}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hhline}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{multicol}
+
+
+\oddsidemargin 0mm
+\evensidemargin 0mm
+\textwidth 160mm
+\textheight 200mm
+\renewcommand\baselinestretch{1.0}
+
+\pagestyle {plain}
+\pagenumbering{arabic}
+
+\newcounter{stepnum}
+
+\title{Assignment 4}
+\author{COMP SCI 2ME3 and SFWR ENG 2AA4\\\\Yaminah Qureshi}
+
+\begin {document}
+
+\maketitle
+
+Four modules, CardTypes, CardADT, CardStackADT and GameModule, make up the specification that models the state of the Freecell game. The CardADT constructs objects of type CardT that represent the 52 unique cards in a deck of cards. Sequences of the CardT objects exported by this module are used to create CardStackT objects to represent a stack of cards in the CardStackADT module. These CardStackT objects are by the GameModule to store the board used in Freecell. This board contains four stacks of seven randomly generated unique cards and four stacks of six randomly generated unique cards as well as four containers, one for each card suit, that accept cards of a suit in increasing order and further, four empty containers that can hold one card each. These stacks and containers are represented by a sequence of CardStackT objects. The GameModule allows for the construction of an instance of a game. This includes setting up the game, moving cards and ending the game if the board enters a winning state.
+
+\newpage
+
+\section* {Card Types Module}
+
+\subsection*{Module}
+
+CardTypes
+
+\subsection* {Uses}
+
+N/A
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Types}
+
+SuitsT = \{Clubs, Clover, Hearts, Diamonds\}\\
+
+\subsubsection* {Exported Access Programs}
+
+None
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+None
+
+\subsubsection* {State Invariant}
+
+None
+
+
+\newpage
+
+\section* {CardADT Module}
+
+\subsection* {Template Module}
+
+CardADT
+
+\subsection* {Uses}
+
+CardTypes
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+%MISS\_ID = $-1$\\
+
+\subsubsection* {Exported Types}
+
+CardT = ?
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new CardT & $\mathbb{N}$, SuitsT & CardT & invalid\_card\\
+\hline
+suit & ~ & SuitsT & ~\\
+\hline
+rank & ~ & $\mathbb{N}$ & ~\\
+\hline 
+
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+$s$: SuitsT //Suit of the card \\
+$r$: $\mathbb{N}$ //Rank of the card
+
+\subsubsection* {State Invariant}
+None
+
+\subsubsection* {Assumptions}
+The Ace, Jack, Queen and King card ranks are represented by the numbers 1, 11, 12 and 13 respectively.
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent new CardT($\mathit{S}, \mathit{R}$):
+\begin{itemize}
+\item transition: $s, r :=\mathit{S}, \mathit{R}$
+\item output: $out := \mathit{self}$
+\item exception: $exc := (r < 1 \lor r > 13 \Rightarrow \mbox{invalid\_card})$
+\end{itemize}
+
+\noindent suit():
+\begin{itemize}
+\item output: $out := s$
+\end{itemize}
+
+\noindent rank():
+\begin{itemize}
+\item output: $out := r$
+\end{itemize}
+
+\newpage
+\section* {CardStackADT Module}
+
+\subsection* {Template Module}
+
+CardStackADT
+
+\subsection* {Uses}
+
+CardADT, CardTypes
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+None
+
+\subsubsection* {Exported Types}
+
+CardStackT = ?
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new CardStackT & seq of CardT & CardStackT & ~\\
+\hline
+top & ~ & CardT & empty\_stack\\
+\hline
+size & ~ & $\mathbb{N}$ & ~\\
+\hline
+push & CardT & CardStackT & ~\\
+\hline
+pop & ~ & CardStackT & empty\_stack\\
+\hline 
+
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+$S$: sequence of CardT //Stack of cards
+
+\subsubsection* {State Invariant}
+None
+
+\subsubsection* {Assumptions}
+None
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent new CardStackT($\mathit{s}$):
+\begin{itemize}
+\item transition: $S := \mathit{s}$
+\item output: $out := \mathit{self}$
+\end{itemize}
+
+\noindent top():
+\begin{itemize}
+\item output: $out := S[|S| - 1]$
+\item exception: $exc := (|S| = 0 \Rightarrow \mbox{empty\_stack})$
+\end{itemize}
+
+\noindent size():
+\begin{itemize}
+\item output: $out := |S|$
+\end{itemize}
+
+\noindent push($\mathit{card}$)
+\begin{itemize}
+\item output: $out := \mbox{new CardStackT}(S\ ||\ \langle \mathit{card} \rangle)$
+\end{itemize}
+
+\noindent pop():
+\begin{itemize}
+\item output: $out := \mbox{new CardStackT}(S[0..|S| - 2])$
+\item exception: $exc := (|S| = 0 \Rightarrow \mbox{empty\_stack})$
+\end{itemize}
+
+\newpage
+\section* {Freecell Game Module}
+
+\subsection* {Template Module}
+
+GameModule
+
+\subsection* {Uses}
+
+CardStackADT, CardADT, CardTypes
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | l |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+init & sequence of CardT & ~ & setup\_error\\
+\hline
+moveCard & $\mathbb{N}$, $\mathbb{N}$ & ~ & invalid\_index, invalid\_move\\
+\hline
+win & ~ & boolean & ~\\
+\hline 
+noMoreMoves & ~ & boolean & ~\\
+\hline 
+getColumn & $\mathbb{N}$ & CardStackT & invalid\_index\\
+\hline 
+
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+$CardS$: sequence of CardStackT //Contains the eight columns of tableau piles, four foundation piles and four free cells respectively
+
+\subsubsection* {State Invariant}
+None
+
+\subsubsection* {Assumptions}
+The $init$ access routine is called first, . win is called after every moveCard. Game ends if the output is true (the player has won). The first four elements of $CardS$ hold four tableau piles initially containing seven cards each, the next four elements hold the next four tableau piles of initially six cards each, the next four elements hold the four foundation piles and the final four elements contain the four free cells respectively, holding a maximum of one card each. Cards added to the tableau piles in the order they appear in the passed sequence of cards, such that the first four tableau piies hold the first four groups of seven cards each and the following four tableau piles hold the following four groups of six cards each
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent init($\mathit{cards}$):
+\begin{itemize}
+\item transition: $CardS := \\ \langle \mbox{new CardStackT}(cards[0..6]),  \mbox{new CardStackT}(cards[7..13]),  \mbox{new CardStackT}(cards[14..20]),\\  \mbox{new CardStackT}(cards[21..27]),  \mbox{new CardStackT}(cards[28..33]),  \mbox{new CardStackT}(cards[34..39]), \\  \mbox{new CardStackT}(cards[40..45]),  \mbox{new CardStackT}(cards[46..51]),  \\ \mbox{new CardStackT}(<>),  \mbox{new CardStackT}(<>),  \mbox{new CardStackT}(<>),  \\ \mbox{new CardStackT}(<>),  \mbox{new CardStackT}(<>),  \mbox{new CardStackT}(<>), \\ \mbox{new CardStackT}(<>),  \mbox{new CardStackT}(<>)$
+\item exception: $exec := (|cards| \neq 52\ \lor\ \exists (card1,\ card2: CardT \ | \ card1.\mbox{suit}() = card2.\mbox{suit}() \land card1.\mbox{rank}() = card2.\mbox{rank}()) \Rightarrow \mbox{setup\_error})$
+\end{itemize}
+
+\noindent moveCard($\mathit{i, j}$)
+\begin{itemize}
+\item transition: $CardS := \mbox{removeCard}(j, CardS[0..i - 1]\ ||\ <CardS[i].\mbox{push}(CardS[j].\mbox{top}())>\ ||\ CardS[i+1..|CardS| -1])$\\
+\item exception: $exec :=$  $(|CardS| <= i < 0  \lor |CardS| <= j < 0 \Rightarrow \mbox{invalid\_index} \\ |\ \mbox{invalidMove}(i, j) \Rightarrow \mbox{invalid\_move})$
+%i <= 7 \land \neg (CardS[i].size() = 0) \land CardS[i].top().validCard(CardS[j].top()) = false \\ \lor 8 <= i <= 11 \land \neg (CardS[i].size() = 0) \land CardS[i].top().nextCard(CardS[j].top()) = false \\ \lor 12 <= i \land \neg (CardS[i].size() = 0)
+
+
+%\begin{tabular}{|p{3.cm}|p{5.cm}|l|}
+%\hhline{~|-|}
+%\multicolumn{1}{r|}{} & \multicolumn{1}{l|}{$CardS :=$}\\
+%\hhline{|-|-|}
+%$ i <= 7 $  & removeCard(j, CardS[0..i - 1] || CardS[i].push(CardS[j].top()) || CardS[i+1..|CardS| -1])\\
+%\hhline{-|-|}
+%$ 8 <= i <= 11 $ & removeCard(j, CardS[0..i - 1] || CardS[i].push(CardS[j].top()) || CardS[i+1..|CardS| -1])\\
+%\hhline{-|-|}
+%$12 <= i $ & removeCard(j, CardS[0..i - 1] || CardS[i].push(CardS[j].top()) || CardS[i+1..|CardS| -1])\\
+%\hhline{-|-|}
+%\end{tabular}
+\end{itemize}
+
+
+
+%\noindent moveToStack($\mathit{i, card}$)
+%\begin{itemize}
+%\item transition: $CardS := CardS[0..i - 1] || CardS[i].push(card) || CardS[i+1..|CardS| -1] $
+%\item exception: $exec := ( \lneg (CardS[i].size() = 0) \land CardS[i].top().validCard(CardS[j].top()) = false \Rightarrow invalid\_move)$
+%\end{itemize}
+%
+%\noindent moveToCon($\mathit{i}$)
+%\begin{itemize}
+%\item transition: $ConS := ConS || < CardS[i].top() >
+%\item exception: $exec := ( |ConS| = 4 \Rightarrow invalid\_move)$
+%\end{itemize}
+%
+
+\noindent win()
+\begin{itemize}
+\item output: $out := (\forall\ i: \mathbb{N}\ |\ 8 <= i <= 11 : CardS[i].\mbox{size}() = 13)$
+\end{itemize}
+
+\noindent noMoreMoves()
+\begin{itemize}
+\item output: $out := (\forall\ i, j: \mathbb{N}\ |\ 0 <= i <= 15 \land 0 <= j <= 15 : \mbox{invalidMove}(i, j))$
+\end{itemize}
+
+\noindent getColumn(i)
+\begin{itemize}
+\item output: $out := CardS[i]$
+\item exception: $exec := (|CardS| <= i < 0  \Rightarrow \mbox{invalid\_index}$
+\end{itemize}
+
+\subsubsection*{Local Functions}
+\noindent removeCard: $\mathbb{N}$, sequence of CardStackT $\rightarrow$ sequence of CardStackT
+
+\noindent $\mbox{removeCard}(j, cards) \equiv $
+\begin{gather*}
+cards[0..j-1] || <cards[j].\mbox{pop}()> || cards[j+1..|cards|-1]
+\end{gather*}
+
+
+\noindent nextCard: CardT, CardT $\rightarrow$ boolean
+
+\noindent nextCard($\mathit{card1, card2}$)
+\begin{gather*}
+(card2.\mbox{rank}() = card1.\mbox{rank}() + 1 \land card2.\mbox{suit}() = card1.\mbox{suit}())
+\end{gather*}
+
+
+\noindent validCard: CardT, CardT $\rightarrow$ boolean
+
+\noindent validCard($\mathit{card1, card2}$)
+\begin{gather*}
+(card2.\mbox{rank}() = card1.\mbox{rank}() - 1 \land \lnot \mbox{sameColour}(card2, card1))
+\end{gather*}
+
+
+\noindent sameColour: CardT, CardT $\rightarrow$ boolean
+
+\noindent sameColour($\mathit{card1, card2}$)
+\begin{gather*}
+(card2.\mbox{suit}() = \mbox{Clubs} \lor card2.\mbox{suit}() = Clover \Rightarrow \\ card1.suit() = Diamonds \lor card1.suit() = Hearts \\ | \ card2.suit() = Diamonds \lor card2.suit() = Hearts \Rightarrow \\ card1.suit() = Clubs \lor card1.suit() = Clover)
+\end{gather*}
+
+
+\noindent invalidMove: $\mathbb{N}, \mathbb{N} \rightarrow$ boolean
+
+\noindent invalidMove($\mathit{i, j}$)
+\begin{gather*}
+(i == j \\
+\lor\ (i <= 7 \land \mbox{invalidMoveToTableau}(i, j)) \\
+\lor\ (8 <= i <= 11 \land \mbox{invalidMoveToFoundation}(i, j)) \\
+\lor\ (12 <= i <= 15 \land \mbox{invalidMoveToFreeCell}(i, j))) 
+\end{gather*}
+
+
+\noindent invalidMoveToTableau: $\mathbb{N}, \mathbb{N} \rightarrow$ boolean
+
+\noindent invalidMoveToTableau($\mathit{i, j}$)
+\begin{gather*}
+(CardS[i].\mbox{size}() \neq 0 \Rightarrow \lnot (\mbox{validCard}(CardS[i].\mbox{top}(), CardS[j].\mbox{top}()))\ |\ true
+\end{gather*}
+
+
+\noindent invalidMoveToFoundation: $\mathbb{N}, \mathbb{N} \rightarrow$ boolean
+
+\noindent invalidMoveToFoundation($\mathit{i, j}$)
+\begin{gather*}
+(CardS[i].\mbox{size}() = 0 \Rightarrow \lnot (CardS[j].\mbox{top().rank()} = 1)\\ |\ \lnot (\mbox{nextCard}(CardS[i].\mbox{top}(), CardS[j].\mbox{top}())))
+\end{gather*}
+
+
+\noindent invalidMoveToFreeCell: $\mathbb{N}, \mathbb{N} \rightarrow$ boolean
+
+\noindent invalidMoveToFreeCell($\mathit{i, j}$)
+\begin{gather*}
+(CardS[i].\mbox{size}() \neq 0)
+\end{gather*}
+\newpage
+
+
+\end{document}
